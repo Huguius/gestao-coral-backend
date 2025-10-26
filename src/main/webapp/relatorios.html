@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - Gestão de Coral</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Plataforma de Gestão</h1>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="coristas.html">Coristas e Músicos</a></li>
+                <li><a href="agenda.html">Agenda</a></li>
+                <li><a href="relatorios.html" class="active">Relatórios</a></li>
+                <li><a href="#" id="logout-btn">Sair</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="container">
+        <h2>Relatórios de Presença</h2>
+        <form id="relatorio-form" class="filter-form">
+            <div class="input-group">
+                <label for="data-inicio">Data de Início:</label>
+                <input type="date" id="data-inicio">
+            </div>
+            <div class="input-group">
+                <label for="data-fim">Data de Fim:</label>
+                <input type="date" id="data-fim">
+            </div>
+            <button type="submit">Gerar Relatório</button>
+        </form>
+        <div id="relatorio-resultado">
+            </div>
+    </main>
+    <script src="js/script.js"></script>
+</body>
+</html>

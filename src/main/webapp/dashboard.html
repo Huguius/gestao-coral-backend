@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Gestão de Coral</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Plataforma de Gestão</h1>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                <li><a href="coristas.html">Coristas e Músicos</a></li>
+                <li><a href="agenda.html">Agenda</a></li>
+                <li><a href="relatorios.html">Relatórios</a></li>
+                <li><a href="#" id="logout-btn">Sair</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="container">
+        <h2>Visão Geral</h2>
+        <section class="dashboard-widgets">
+            <div class="widget">
+                <h3>Próximo Ensaio</h3>
+                <p id="proximo-ensaio">Carregando...</p>
+            </div>
+            <div class="widget">
+                <h3>Próxima Apresentação</h3>
+                <p id="proxima-apresentacao">Carregando...</p>
+            </div>
+            <div class="widget">
+                <h3>Total de Coristas</h3>
+                <p id="total-coristas">Carregando...</p>
+            </div>
+        </section>
+    </main>
+    <script src="js/script.js"></script>
+</body>
+</html>
