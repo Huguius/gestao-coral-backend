@@ -1,0 +1,12 @@
+com\gestao\coral\model\Agenda.class
+com\gestao\coral\dao\PresencaDAO.class
+com\gestao\coral\model\Musico.class
+com\gestao\coral\servlet\CoristaServlet.class
+com\gestao\coral\servlet\AgendaServlet.class
+com\gestao\coral\dao\CoristaDAO.class
+com\gestao\coral\dao\AgendaDAO.class
+com\gestao\coral\dao\MusicoDAO.class
+com\gestao\coral\model\Presenca.class
+com\gestao\coral\servlet\MusicoServlet.class
+com\gestao\coral\model\Corista.class
+com\gestao\coral\util\JPAUtil.class
