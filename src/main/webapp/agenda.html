@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agenda - Gestão de Coral</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -12,19 +12,58 @@
         <nav>
             <ul>
                 <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="coristas.html">Coristas e Músicos</a></li>
+                <li><a href="coristas.html">Coristas</a></li>
+                <li><a href="musicos.html">Músicos</a></li>
                 <li><a href="agenda.html" class="active">Agenda</a></li>
+                <li><a href="presencas.html">Presenças</a></li> 
                 <li><a href="relatorios.html">Relatórios</a></li>
                 <li><a href="#" id="logout-btn">Sair</a></li>
             </ul>
         </nav>
     </header>
     <main class="container">
-        <h2>Agenda do Coral</h2>
-        <div id="calendar">
-            <p><strong>TODO:</strong> Integrar uma biblioteca de calendário para uma visualização completa.</p>
+        <div class="header-main">
+            <h2>Agenda do Coral</h2>
+            <button id="add-agenda-btn">Adicionar Evento</button>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Local</th>
+                        <th>Descrição</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="agenda-table-body">
+                    </tbody>
+            </table>
         </div>
     </main>
+
+    <div id="agenda-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3 id="modal-title">Adicionar Novo Evento</h3>
+            <form id="agenda-form">
+                <input type="hidden" id="agenda-id">
+                <div class="input-group">
+                    <label for="agenda-data">Data:</label>
+                    <input type="date" id="agenda-data" required>
+                </div>
+                <div class="input-group">
+                    <label for="agenda-local">Local:</label>
+                    <input type="text" id="agenda-local">
+                </div>
+                <div class="input-group">
+                    <label for="agenda-descricao">Descrição:</label>
+                    <textarea id="agenda-descricao" rows="3"></textarea>
+                </div>
+                <button type="submit">Salvar</button>
+            </form>
+        </div>
+    </div>
     <script src="js/script.js"></script>
 </body>
 </html>

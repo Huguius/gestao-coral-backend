@@ -72,6 +72,25 @@ public class CoristaDAO {
             em.close();
         }
     }
+
+    /**
+     * Atualiza os dados de um corista existente na base de dados.
+     * Semelhante ao 'update' do DAO antigo.
+     * @param corista O objeto Corista com os dados atualizados (incluindo o ID).
+     */
+    public void update(Corista corista) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            // O método 'merge' do JPA faz exatamente isto:
+            // Procura um Corista com o mesmo ID que o objeto 'corista'.
+            // Se encontrar, atualiza os campos no banco de dados com os valores do objeto.
+            em.merge(corista);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
     
     // Poderíamos adicionar o 'update' aqui, mas vamos manter simples por agora.
 }

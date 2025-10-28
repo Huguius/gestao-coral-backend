@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcar Presenças - Gestão de Coral</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Plataforma de Gestão</h1>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="coristas.html">Coristas</a></li>
+                <li><a href="musicos.html">Músicos</a></li>
+                <li><a href="agenda.html">Agenda</a></li>
+                <li><a href="presencas.html" class="active">Presenças</a></li>
+                <li><a href="relatorios.html">Relatórios</a></li>
+                <li><a href="#" id="logout-btn">Sair</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="container">
+        <h2>Marcar Presenças</h2>
+
+        <div class="filter-form" style="margin-bottom: 20px;">
+             <div class="input-group">
+                <label for="agenda-select">Selecione o Evento:</label>
+                <select id="agenda-select" style="width: 100%;">
+                    <option value="">-- Carregando eventos... --</option>
+                </select>
+            </div>
+             <button id="load-coristas-presenca-btn" style="margin-top: 10px;">Carregar Lista de Coristas</button>
+        </div>
+
+        <hr style="margin: 20px 0;">
+
+        <h3>Lista de Coristas</h3>
+        <div id="coristas-presenca-list" style="margin-bottom: 20px; max-height: 400px; overflow-y: auto; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <p>Selecione um evento e clique em "Carregar Lista de Coristas".</p>
+        </div>
+
+        <button id="save-presencas-btn">Salvar Presenças</button>
+
+    </main>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

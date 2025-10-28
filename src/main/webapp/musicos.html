@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Músicos - Gestão de Coral</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Plataforma de Gestão</h1>
+    <nav>
+            <ul>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="coristas.html">Coristas</a></li>
+                <li><a href="musicos.html" class="active">Músicos</a></li>
+                <li><a href="agenda.html">Agenda</a></li>
+                <li><a href="presencas.html" >Presenças</a></li>
+                <li><a href="relatorios.html">Relatórios</a></li>
+                <li><a href="#" id="logout-btn">Sair</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="container">
+        <div class="header-main">
+            <h2>Gerenciamento de Músicos</h2>
+            <button id="add-musico-btn">Adicionar Novo</button>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Instrumento</th>
+                        <th>Ativo</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="musicos-table-body">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div id="musico-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3 id="modal-title">Adicionar Novo Músico</h3>
+            <form id="musico-form">
+                <input type="hidden" id="musico-id">
+                <div class="input-group">
+                    <label for="musico-nome">Nome Completo:</label>
+                    <input type="text" id="musico-nome" required>
+                </div>
+                <div class="input-group">
+                    <label for="musico-instrumento">Instrumento:</label>
+                    <input type="text" id="musico-instrumento">
+                </div>
+                <div class="input-group">
+                    <label for="musico-ativo">
+                        <input type="checkbox" id="musico-ativo" checked> Ativo
+                    </label>
+                </div>
+                <button type="submit">Salvar</button>
+            </form>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>

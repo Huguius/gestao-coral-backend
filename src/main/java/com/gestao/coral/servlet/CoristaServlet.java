@@ -99,4 +99,55 @@ public class CoristaServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro ao apagar corista: " + e.getMessage());
         }
     }
+
+    /**
+     * Lida com pedidos PUT (ex: atualizar um corista existente).
+     * Chamado quando o formulário é submetido no modo de edição.
+     * Espera um URL como /api/coristas/123
+     */
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+            // 1. Obter o ID do URL (igual ao doDelete)
+            String pathInfo = request.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID do corista em falta no URL para atualização.");
+                return;
+            }
+            int id = Integer.parseInt(pathInfo.substring(1));
+
+            // 2. Ler o JSON com os dados atualizados do corpo do pedido
+            String jsonPayload = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            Corista coristaAtualizado = this.gson.fromJson(jsonPayload, Corista.class);
+
+            // 3. Garantir que o ID no objeto JSON corresponde ao ID no URL
+            //    (e definir o ID no objeto, caso não venha no JSON)
+            coristaAtualizado.setId(id);
+            // Poderíamos adicionar uma verificação extra aqui se quiséssemos ser mais robustos
+            // if (coristaAtualizado.getId() != 0 && coristaAtualizado.getId() != id) {
+            //     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID no corpo (" + coristaAtualizado.getId() + ") não corresponde ao ID no URL (" + id + ").");
+            //     return;
+            // }
+
+            // 4. Usar o DAO para atualizar no banco de dados
+            coristaDAO.update(coristaAtualizado);
+
+            // 5. Enviar resposta de sucesso (200 OK) com o objeto atualizado
+            response.setStatus(HttpServletResponse.SC_OK);
+            String jsonResposta = this.gson.toJson(coristaAtualizado);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().print(jsonResposta);
+            response.getWriter().flush();
+
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID inválido no URL.");
+        } catch (Exception e) {
+            System.err.println("### ERRO GRAVE no CoristaServlet.doPut ###");
+            e.printStackTrace(); // Log detalhado no servidor
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro ao atualizar corista: " + e.getMessage());
+        }
+    }
 }

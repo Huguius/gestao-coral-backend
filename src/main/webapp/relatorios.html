@@ -9,12 +9,14 @@
 <body>
     <header>
         <h1>Plataforma de Gestão</h1>
-        <nav>
+       <nav>
             <ul>
                 <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="coristas.html">Coristas e Músicos</a></li>
+                <li><a href="coristas.html">Coristas</a></li>
+                <li><a href="musicos.html">Músicos</a></li>
                 <li><a href="agenda.html">Agenda</a></li>
-                <li><a href="relatorios.html" class="active">Relatórios</a></li>
+                <li><a href="presencas.html">Presenças</a></li>
+                <li><a href="relatorios.html" class="active">Relatórios</a></li> 
                 <li><a href="#" id="logout-btn">Sair</a></li>
             </ul>
         </nav>
@@ -24,16 +26,35 @@
         <form id="relatorio-form" class="filter-form">
             <div class="input-group">
                 <label for="data-inicio">Data de Início:</label>
-                <input type="date" id="data-inicio">
+                <input type="date" id="data-inicio" required> 
             </div>
             <div class="input-group">
                 <label for="data-fim">Data de Fim:</label>
-                <input type="date" id="data-fim">
+                <input type="date" id="data-fim" required> 
             </div>
             <button type="submit">Gerar Relatório</button>
         </form>
+
+        <hr style="margin: 20px 0;">
+
+        <h3>Resultados</h3>
         <div id="relatorio-resultado">
+            <div class="table-container" style="margin-top: 10px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data Evento</th>
+                            <th>Local</th>
+                            <th>Corista</th>
+                            <th>Presente</th>
+                        </tr>
+                    </thead>
+                    <tbody id="relatorio-table-body">
+                        <tr><td colspan="4" style="text-align: center;">Selecione um intervalo de datas e clique em "Gerar Relatório".</td></tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
     </main>
     <script src="js/script.js"></script>
 </body>

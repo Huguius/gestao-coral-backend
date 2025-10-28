@@ -110,4 +110,53 @@ public class AgendaServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro ao apagar evento: " + e.getMessage());
         }
     }
+
+    /**
+     * Lida com pedidos PUT (atualizar um evento da agenda existente).
+     * Espera um URL como /api/agenda/123
+     */
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+            // 1. Obter ID do URL
+            String pathInfo = request.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID do evento em falta no URL para atualização.");
+                return;
+            }
+            int id = Integer.parseInt(pathInfo.substring(1));
+
+            // 2. Ler JSON do corpo
+            String jsonPayload = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            // Usamos o GSON configurado com o formato de data
+            Agenda agendaAtualizada = this.gson.fromJson(jsonPayload, Agenda.class);
+
+            // 3. Garantir ID correto no objeto
+            agendaAtualizada.setId(id);
+
+            // 4. Atualizar no banco de dados
+            agendaDAO.update(agendaAtualizada); // Chama o novo método do DAO
+
+            // 5. Enviar resposta OK com objeto atualizado
+            response.setStatus(HttpServletResponse.SC_OK);
+            String jsonResposta = this.gson.toJson(agendaAtualizada);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().print(jsonResposta);
+            response.getWriter().flush();
+
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID inválido no URL.");
+        } catch (com.google.gson.JsonSyntaxException e) {
+            System.err.println("### ERRO ao processar JSON no AgendaServlet.doPut ###");
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Erro no formato JSON ou na data (use yyyy-MM-dd): " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("### ERRO GRAVE no AgendaServlet.doPut ###");
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro ao atualizar evento: " + e.getMessage());
+        }
+    }
 }

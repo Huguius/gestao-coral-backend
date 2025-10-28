@@ -62,4 +62,19 @@ public class AgendaDAO {
             em.close();
         }
     }
+    /**
+     * Atualiza os dados de um evento da agenda existente.
+     * @param agenda O objeto Agenda com os dados atualizados (incluindo o ID).
+     */
+    public void update(Agenda agenda) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            // O 'merge' procura pelo ID e atualiza os outros campos
+            em.merge(agenda);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
 }
