@@ -79,52 +79,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // Lógica do Formulário (CRIAR NOVO - POST ou EDITAR EXISTENTE - PUT)
-        coristaForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+coristaForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-            const coristaIdInput = document.getElementById('corista-id');
-            const coristaId = coristaIdInput.value; // Pega o ID (pode estar vazio se for 'novo')
+        const coristaIdInput = document.getElementById('corista-id');
+        const coristaId = coristaIdInput.value;
 
-            // 1. Apanha os dados do formulário
-            const coristaData = {
-                nome: document.getElementById('nome').value,
-                tipoVoz: document.getElementById('naipe').value,
-                ativo: true // Assume ativo = true para simplificar
-                // Se quiséssemos editar 'ativo', precisaríamos de um checkbox no HTML
-            };
+        // 1. Apanha os dados do formulário, incluindo o checkbox 'ativo'
+        const coristaData = {
+            nome: document.getElementById('nome').value,
+            tipoVoz: document.getElementById('naipe').value, // ID 'naipe' no HTML corresponde a 'tipoVoz'
+            ativo: document.getElementById('corista-ativo').checked // Lê o estado do checkbox
+        };
 
-            // Determina o método (POST ou PUT) e o URL
-            const isEditing = coristaId !== '';
-            const method = isEditing ? 'PUT' : 'POST';
-            const url = isEditing ? `${API_BASE_URL}/coristas/${coristaId}` : `${API_BASE_URL}/coristas`;
+        const isEditing = coristaId !== '';
+        const method = isEditing ? 'PUT' : 'POST';
+        const url = isEditing ? `${API_BASE_URL}/coristas/${coristaId}` : `${API_BASE_URL}/coristas`;
 
-            console.log(`Salvando corista: ID=${coristaId || 'Novo'}, Método=${method}, URL=${url}`);
+        console.log(`Salvando corista: ID=${coristaId || 'Novo'}, Método=${method}, URL=${url}`, coristaData);
 
-            try {
-                // 2. Envia os dados (JSON) para o CoristaServlet (doPost ou doPut)
-                const response = await fetch(url, {
-                    method: method,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(coristaData)
-                });
+        try {
+            // 2. Envia os dados (JSON) para o CoristaServlet (doPost ou doPut)
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(coristaData)
+            });
 
-                if (!response.ok) {
-                    const errorText = await response.text(); // Tenta ler a mensagem de erro do servidor
-                    throw new Error(`Falha ao salvar corista (Status: ${response.status}): ${errorText}`);
-                }
-
-                // 3. Se correu bem, fecha o modal e recarrega a lista
-                modal.style.display = 'none';
-                coristaIdInput.value = ''; // Limpa o ID escondido para a próxima vez
-                loadCoristas();
-
-            } catch (error) {
-                console.error("Erro ao salvar corista:", error);
-                alert(`Erro ao salvar. Verifique a consola.\nDetalhe: ${error.message}`);
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Falha ao salvar corista (Status: ${response.status}): ${errorText}`);
             }
-        });
+
+            // 3. Se correu bem, fecha o modal e recarrega a lista
+            modal.style.display = 'none';
+            coristaIdInput.value = '';
+            loadCoristas();
+
+        } catch (error) {
+            console.error("Erro ao salvar corista:", error);
+            alert(`Erro ao salvar. Verifique a consola.\nDetalhe: ${error.message}`);
+        }
+    });
 
         // Carrega os dados quando a página abre
         loadCoristas();
@@ -370,6 +368,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- NOVA LÓGICA PARA A PÁGINA 'dashboard.html' ---
+    if (window.location.pathname.endsWith('dashboard.html') || window.location.pathname.endsWith('/gestao-coral-backend/')) { // Apanha também a raiz
+        console.log("Página dashboard.html carregada.");
+        // Chama a função global para carregar os dados do dashboard
+        loadDashboardData();
+    }
+
 });
 
 /**
@@ -399,16 +404,18 @@ function renderCoristas(coristas) {
     tableBody.innerHTML = '';
 
     if (!coristas || coristas.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="3">Nenhum corista encontrado.</td></tr>'; // Colspan 3 agora
+        // Ajusta o colspan para 4 colunas
+        tableBody.innerHTML = '<tr><td colspan="4">Nenhum corista encontrado.</td></tr>';
         return;
     }
 
     coristas.forEach(corista => {
-        // Agora só temos 3 colunas (Nome, Naipe, Ações)
+        // Cria a linha com Nome, Naipe (tipoVoz), Ativo (Sim/Não) e Ações
         const row = `
             <tr>
                 <td>${corista.nome || ''}</td>
                 <td>${corista.tipoVoz || ''}</td>
+                <td>${corista.ativo ? 'Sim' : 'Não'}</td> 
                 <td>
                     <button class="edit-btn" onclick="editCorista(${corista.id})">Editar</button>
                     <button class="delete-btn" onclick="deleteCorista(${corista.id})">Excluir</button>
@@ -423,31 +430,30 @@ function renderCoristas(coristas) {
 async function editCorista(id) {
     console.log(`Editando corista com ID: ${id}`);
     const modal = document.getElementById('corista-modal');
-    const modalTitle = document.getElementById('modal-title');
+    const modalTitle = modal.querySelector('#modal-title'); // Procura dentro do modal
     const coristaForm = document.getElementById('corista-form');
     const coristaIdInput = document.getElementById('corista-id');
     const nomeInput = document.getElementById('nome');
     const naipeInput = document.getElementById('naipe'); // Lembre-se que 'naipe' no HTML corresponde a 'tipoVoz'
+    const ativoCheckbox = document.getElementById('corista-ativo'); // Seleciona o checkbox
 
     try {
-        // 1. Buscar os dados do corista específico no back-end (SIMULADO)
-        //    *** POR AGORA, VAMOS SIMULAR A BUSCA ***
-        //    (Idealmente, implementar GET /api/coristas/{id} no Servlet)
+        // SIMULAÇÃO da busca (idealmente, GET /api/coristas/{id})
         console.log("Simulação: Buscando dados para ID " + id);
-        // Encontra o corista na lista já carregada (solução temporária)
-        const coristasCarregados = await fetch(`${API_BASE_URL}/coristas`).then(res => res.json()); // Usa a global
+        const coristasCarregados = await fetch(`${API_BASE_URL}/coristas`).then(res => res.json());
         const corista = coristasCarregados.find(c => c.id === id);
         if (!corista) {
              alert("Erro na simulação: Corista não encontrado na lista.");
              return;
         }
-        // *** FIM DA SIMULAÇÃO ***
+        // FIM DA SIMULAÇÃO
 
-        // 2. Preencher o formulário no modal
-        modalTitle.innerText = 'Editar Corista';
-        coristaIdInput.value = corista.id; // Guarda o ID no campo escondido
+        // 2. Preencher o formulário no modal, incluindo o checkbox
+        if (modalTitle) modalTitle.innerText = 'Editar Corista';
+        coristaIdInput.value = corista.id;
         nomeInput.value = corista.nome;
-        naipeInput.value = corista.tipoVoz || ''; // Preenche o naipe/tipoVoz
+        naipeInput.value = corista.tipoVoz || '';
+        ativoCheckbox.checked = corista.ativo; // Define o estado do checkbox
 
         // 3. Abrir o modal
         modal.style.display = 'flex';
@@ -951,4 +957,40 @@ function renderRelatorioPresenca(presencas) {
         `;
         tableBody.innerHTML += row;
     });
+}
+/**
+ * Funções da API para o Dashboard (globais)
+ */
+
+async function loadDashboardData() {
+    const proximoEnsaioEl = document.getElementById('proximo-ensaio');
+    const proximaApresentacaoEl = document.getElementById('proxima-apresentacao');
+    const totalCoristasEl = document.getElementById('total-coristas');
+
+    // Verifica se os elementos existem na página atual
+    if (!proximoEnsaioEl || !proximaApresentacaoEl || !totalCoristasEl) {
+        // console.warn("Elementos do dashboard não encontrados na página atual.");
+        return; // Sai se não estiver na página do dashboard
+    }
+
+    try {
+        // Chama o DashboardServlet (doGet)
+        const response = await fetch(`${API_BASE_URL}/dashboard`);
+        if (!response.ok) {
+           throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json(); // Recebe o JSON com { totalCoristas, proximoEvento, ... }
+
+        // Atualiza os elementos HTML com os dados recebidos
+        proximoEnsaioEl.textContent = data.proximoEnsaio || 'N/D';
+        proximaApresentacaoEl.textContent = data.proximaApresentacao || 'N/D';
+        totalCoristasEl.textContent = data.totalCoristas !== undefined ? data.totalCoristas : 'Erro';
+
+    } catch (error) {
+        console.error("Erro ao buscar dados do dashboard:", error);
+        // Mostra uma mensagem de erro nos widgets
+        proximoEnsaioEl.textContent = 'Erro ao carregar';
+        proximaApresentacaoEl.textContent = 'Erro ao carregar';
+        totalCoristasEl.textContent = 'Erro';
+    }
 }

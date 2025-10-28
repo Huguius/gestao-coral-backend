@@ -93,4 +93,26 @@ public class CoristaDAO {
     }
     
     // Poderíamos adicionar o 'update' aqui, mas vamos manter simples por agora.
+
+    /**
+     * Conta o número total de coristas ativos.
+     * @return O número de coristas com 'ativo' = true.
+     */
+    public long countAtivos() {
+        EntityManager em = JPAUtil.getEntityManager();
+        long count = 0;
+        try {
+            // Consulta JPQL para contar Coristas onde ativo é true
+            String jpql = "SELECT COUNT(c) FROM Corista c WHERE c.ativo = true";
+            count = em.createQuery(jpql, Long.class)
+                      .getSingleResult(); // Retorna um único número (Long)
+        } catch (Exception e) {
+            System.err.println("### ERRO ao contar coristas ativos no CoristaDAO ###");
+            e.printStackTrace();
+            // Retorna 0 em caso de erro
+        } finally {
+            em.close();
+        }
+        return count;
+    }
 }

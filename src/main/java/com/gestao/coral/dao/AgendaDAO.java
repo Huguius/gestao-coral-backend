@@ -3,6 +3,8 @@ package com.gestao.coral.dao;
 import com.gestao.coral.model.Agenda; // A entidade Agenda
 import com.gestao.coral.util.JPAUtil; // O nosso utilitário
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+
 import java.util.List;
 
 /**
@@ -77,4 +79,41 @@ public class AgendaDAO {
             em.close();
         }
     }
+
+    /**
+     * Encontra o próximo evento da agenda (ensaio ou apresentação)
+     * a partir da data atual.
+     * @return O objeto Agenda do próximo evento, ou null se não houver eventos futuros.
+     */
+    public Agenda findProximoEvento() {
+        EntityManager em = JPAUtil.getEntityManager();
+        Agenda proximoEvento = null;
+        try {
+            // Consulta JPQL para encontrar Agendas onde a data é maior ou igual à data atual
+            // Ordena por data ascendente para pegar o mais próximo
+            // setMaxResults(1) limita o resultado a apenas um item (o primeiro, que será o mais próximo)
+            String jpql = "SELECT a FROM Agenda a WHERE a.data >= CURRENT_DATE ORDER BY a.data ASC";
+            TypedQuery<Agenda> query = em.createQuery(jpql, Agenda.class)
+                                         .setMaxResults(1); // Pega apenas o primeiro resultado
+
+            // Usamos getResultList() e verificamos se está vazia para evitar NoResultException
+            List<Agenda> resultados = query.getResultList();
+            if (!resultados.isEmpty()) {
+                proximoEvento = resultados.get(0);
+            }
+
+        } catch (Exception e) {
+            System.err.println("### ERRO ao buscar próximo evento no AgendaDAO ###");
+            e.printStackTrace();
+            // Retorna null em caso de erro
+        } finally {
+            em.close();
+        }
+        return proximoEvento;
+    }
+
+    // Nota: Esta consulta assume que CURRENT_DATE funciona como esperado no seu dialeto
+    // de base de dados configurado no Hibernate. Para MySQL, isto geralmente funciona.
+    // Também não distinguimos entre "Ensaio" e "Apresentação" aqui, pegamos o próximo evento
+    // de qualquer tipo. Poderíamos adicionar um campo 'tipo' à entidade Agenda se necessário.
 }
