@@ -16,7 +16,7 @@
                 <li><a href="musicos.html">Músicos</a></li>
                 <li><a href="agenda.html">Agenda</a></li>
                 <li><a href="presencas.html">Presenças</a></li>
-                <li><a href="relatorios.html" class="active">Relatórios</a></li> 
+                <li><a href="relatorios.html" class="active">Relatórios</a></li>
                 <li><a href="#" id="logout-btn">Sair</a></li>
             </ul>
         </nav>
@@ -26,11 +26,11 @@
         <form id="relatorio-form" class="filter-form">
             <div class="input-group">
                 <label for="data-inicio">Data de Início:</label>
-                <input type="date" id="data-inicio" required> 
+                <input type="date" id="data-inicio" required>
             </div>
             <div class="input-group">
                 <label for="data-fim">Data de Fim:</label>
-                <input type="date" id="data-fim" required> 
+                <input type="date" id="data-fim" required>
             </div>
             <button type="submit">Gerar Relatório</button>
         </form>
@@ -45,12 +45,13 @@
                         <tr>
                             <th>Data Evento</th>
                             <th>Local</th>
-                            <th>Corista</th>
+                            <th>Participante</th>
+                            <th>Tipo</th>
                             <th>Presente</th>
                         </tr>
                     </thead>
                     <tbody id="relatorio-table-body">
-                        <tr><td colspan="4" style="text-align: center;">Selecione um intervalo de datas e clique em "Gerar Relatório".</td></tr>
+                        <tr><td colspan="5" style="text-align: center;">Selecione um intervalo de datas e clique em "Gerar Relatório".</td></tr>
                     </tbody>
                 </table>
             </div>

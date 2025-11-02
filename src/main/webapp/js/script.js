@@ -904,35 +904,37 @@ function renderRelatorioPresenca(presencas) {
     tableBody.innerHTML = ''; 
 
     if (!presencas || presencas.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Nenhum registo de presença encontrado para o período selecionado.</td></tr>';
+        
+        tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nenhum registo de presença encontrado para o período selecionado.</td></tr>';
         return;
     }
 
     
 
-    presencas.forEach(presenca => {
+    presencas.forEach(item => {
         
         
-        const coristaNome = presenca.corista ? presenca.corista.nome : 'Corista Desconhecido';
-        const agendaData = presenca.agenda ? presenca.agenda.data : 'N/D';
-        const agendaLocal = presenca.agenda ? presenca.agenda.local : 'N/D';
-        const presenteStatus = presenca.presente ? 'Sim' : 'Não';
-
         
         let dataFormatada = 'N/D';
-        if (agendaData && agendaData !== 'N/D') {
+        if (item.data && item.data !== 'N/D') {
             try {
-                const [ano, mes, dia] = agendaData.split('-');
+                
+                const [ano, mes, dia] = item.data.split('-');
                 dataFormatada = `${dia}/${mes}/${ano}`;
-            } catch (e) { dataFormatada = agendaData; }
+            } catch (e) { 
+                console.error("Erro ao formatar data:", item.data, e);
+                dataFormatada = item.data; 
+            }
         }
 
+        
         const row = `
             <tr>
                 <td>${dataFormatada}</td>
-                <td>${agendaLocal || ''}</td>
-                <td>${coristaNome || ''}</td>
-                <td>${presenteStatus}</td>
+                <td>${item.local || ''}</td>
+                <td>${item.nomeParticipante || ''}</td>
+                <td>${item.tipoParticipante || ''}</td>
+                <td>${item.presente || ''}</td>
             </tr>
         `;
         tableBody.innerHTML += row;
