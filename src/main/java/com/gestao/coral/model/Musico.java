@@ -6,15 +6,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-/**
- * Esta é uma Entidade JPA que mapeia para a tabela 'musicos'.
- */
 @Entity
-@Table(name = "musicos") // Liga à tabela 'musicos' no seu SQL
+@Table(name = "musicos") 
 public class Musico {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Usa o AUTO_INCREMENT do MySQL
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private int id;
     
     private String nome;
@@ -23,8 +20,6 @@ public class Musico {
     
     private boolean ativo;
 
-    // Construtores, Getters e Setters (iguais ao do projeto antigo)
-    
     public Musico() {}
     
     public int getId(){return id;}

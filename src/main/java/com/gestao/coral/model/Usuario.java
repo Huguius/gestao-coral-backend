@@ -6,11 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-/**
- * Entidade JPA que mapeia a tabela 'usuario'.
- */
 @Entity
-@Table(name = "usuario") // Liga à tabela 'usuario'
+@Table(name = "usuario") 
 public class Usuario {
 
     @Id
@@ -20,7 +17,7 @@ public class Usuario {
     private String username;
     private String password;
 
-    // Getters e Setters (necessários para JPA e GSON)
+    
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public String getUsername() { return username; }

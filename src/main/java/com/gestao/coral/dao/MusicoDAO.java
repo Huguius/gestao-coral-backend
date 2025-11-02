@@ -15,47 +15,35 @@ public class MusicoDAO {
         return musicos;
     }
 
-    /**
-     * Insere um novo músico na base de dados.
-     * @param musico O objeto Musico a ser inserido.
-     */
     public void insert(Musico musico) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(musico); // Guarda o novo músico
+            em.persist(musico); 
             em.getTransaction().commit();
         } finally {
             em.close();
         }
     }
 
-    /**
-     * Atualiza os dados de um músico existente.
-     * @param musico O objeto Musico com os dados atualizados (incluindo o ID).
-     */
     public void update(Musico musico) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            em.merge(musico); // Atualiza o músico existente
+            em.merge(musico); 
             em.getTransaction().commit();
         } finally {
             em.close();
         }
     }
 
-    /**
-     * Apaga um músico da base de dados pelo seu ID.
-     * @param id O ID do músico a ser apagado.
-     */
     public void delete(int id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            Musico musico = em.find(Musico.class, id); // Encontra o músico pelo ID
+            Musico musico = em.find(Musico.class, id); 
             if (musico != null) {
-                em.remove(musico); // Apaga se encontrado
+                em.remove(musico); 
             }
             em.getTransaction().commit();
         } finally {
