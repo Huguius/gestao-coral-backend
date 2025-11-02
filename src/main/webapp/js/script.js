@@ -965,3 +965,34 @@ async function loadDashboardData() {
         totalCoristasEl.textContent = 'Erro';
     }
 }
+
+async function loadDashboardData() {
+    const proximoEnsaioEl = document.getElementById('proximo-ensaio');
+    const proximaApresentacaoEl = document.getElementById('proxima-apresentacao');
+    const totalCoristasEl = document.getElementById('total-coristas');
+    const totalMusicosEl = document.getElementById('total-musicos');
+
+    if (!proximoEnsaioEl || !proximaApresentacaoEl || !totalCoristasEl || !totalMusicosEl) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/dashboard`);
+        if (!response.ok) {
+           throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json(); 
+
+        proximoEnsaioEl.textContent = data.proximoEnsaio || 'N/D';
+        proximaApresentacaoEl.textContent = data.proximaApresentacao || 'N/D';
+        totalCoristasEl.textContent = data.totalCoristas !== undefined ? data.totalCoristas : 'Erro';
+        totalMusicosEl.textContent = data.totalMusicos !== undefined ? data.totalMusicos : 'Erro';
+
+    } catch (error) {
+        console.error("Erro ao buscar dados do dashboard:", error);
+        proximoEnsaioEl.textContent = 'Erro ao carregar';
+        proximaApresentacaoEl.textContent = 'Erro ao carregar';
+        totalCoristasEl.textContent = 'Erro';
+        totalMusicosEl.textContent = 'Erro';
+    }
+}

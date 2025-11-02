@@ -50,4 +50,26 @@ public class MusicoDAO {
             em.close();
         }
     }
+
+    /**
+     * Conta o número total de músicos ativos.
+     * @return O número de músicos com 'ativo' = true.
+     */
+    public long countAtivos() {
+        EntityManager em = JPAUtil.getEntityManager();
+        long count = 0;
+        try {
+            // Consulta JPQL para contar Musicos onde ativo é true
+            String jpql = "SELECT COUNT(m) FROM Musico m WHERE m.ativo = true";
+            count = em.createQuery(jpql, Long.class)
+                      .getSingleResult(); // Retorna um único número (Long)
+        } catch (Exception e) {
+            System.err.println("### ERRO ao contar músicos ativos no MusicoDAO ###");
+            e.printStackTrace();
+            // Retorna 0 em caso de erro
+        } finally {
+            em.close();
+        }
+        return count;
+    }
 }
