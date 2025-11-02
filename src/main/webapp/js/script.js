@@ -284,28 +284,27 @@ coristaForm.addEventListener('submit', async (e) => {
     }
 
     
-    if (window.location.pathname.endsWith('presencas.html')) {
+ if (window.location.pathname.endsWith('presencas.html')) {
         console.log("Página presencas.html carregada.");
         const agendaSelect = document.getElementById('agenda-select');
-        const loadCoristasBtn = document.getElementById('load-coristas-presenca-btn');
+        const loadListasBtn = document.getElementById('load-listas-presenca-btn');
         const coristasListDiv = document.getElementById('coristas-presenca-list');
+        const musicosListDiv = document.getElementById('musicos-presenca-list');
         const savePresencasBtn = document.getElementById('save-presencas-btn');
 
-        
-        loadAgendaOptions(); 
+        loadAgendaOptions();
 
-        
-        loadCoristasBtn.addEventListener('click', () => {
+        loadListasBtn.addEventListener('click', () => {
             const selectedAgendaId = agendaSelect.value;
             if (!selectedAgendaId) {
                 alert("Por favor, selecione um evento da agenda primeiro.");
                 return;
             }
-            console.log("Carregando coristas para o evento ID:", selectedAgendaId);
-            loadCoristasForPresenca(selectedAgendaId); 
+            console.log("Carregando listas para o evento ID:", selectedAgendaId);
+            loadCoristasForPresenca(selectedAgendaId);
+            loadMusicosForPresenca(selectedAgendaId);
         });
 
-        
         savePresencasBtn.addEventListener('click', async () => {
             const selectedAgendaId = agendaSelect.value;
             if (!selectedAgendaId) {
@@ -313,18 +312,18 @@ coristaForm.addEventListener('submit', async (e) => {
                 return;
             }
 
-            
-            const checkboxes = coristasListDiv.querySelectorAll('input[type="checkbox"]');
-            if (checkboxes.length === 0) {
-                alert("Nenhum corista carregado para marcar presença.");
+            const coristaCheckboxes = coristasListDiv.querySelectorAll('input[type="checkbox"]');
+            const musicoCheckboxes = musicosListDiv.querySelectorAll('input[type="checkbox"]');
+
+            if (coristaCheckboxes.length === 0 && musicoCheckboxes.length === 0) {
+                alert("Nenhuma lista carregada para marcar presença.");
                 return;
             }
 
             console.log("Salvando presenças para o evento ID:", selectedAgendaId);
-            await savePresencas(selectedAgendaId, checkboxes); 
+            await saveTodasPresencas(selectedAgendaId, coristaCheckboxes, musicoCheckboxes);
         });
     }
-
     
     if (window.location.pathname.endsWith('relatorios.html')) {
         console.log("Página relatorios.html carregada.");
@@ -791,22 +790,18 @@ async function loadCoristasForPresenca(agendaId) {
 }
 
 
-async function savePresencas(agendaId, checkboxes) {
+async function saveTodasPresencas(agendaId, coristaCheckboxes, musicoCheckboxes) {
     console.log("Iniciando salvamento de presenças...");
     let successCount = 0;
     let errorCount = 0;
-
-    
-    
     const savePromises = [];
-    checkboxes.forEach(checkbox => {
-        const presencaData = {
-            idCorista: parseInt(checkbox.dataset.coristaId), 
-            idAgenda: parseInt(agendaId),
-            presente: checkbox.checked 
-        };
 
-        console.log("Enviando:", presencaData);
+    coristaCheckboxes.forEach(checkbox => {
+        const presencaData = {
+            idCorista: parseInt(checkbox.dataset.coristaId),
+            idAgenda: parseInt(agendaId),
+            presente: checkbox.checked
+        };
 
         const savePromise = fetch(`${API_BASE_URL}/presencas`, {
             method: 'POST',
@@ -815,45 +810,56 @@ async function savePresencas(agendaId, checkboxes) {
         })
         .then(response => {
             if (!response.ok) {
-                
-                return response.text().then(text => {
-                   console.error(`Erro ao salvar presença para corista ID ${presencaData.idCorista}: Status ${response.status}, Resposta: ${text}`);
-                   throw new Error(`Falha ao salvar presença para ID ${presencaData.idCorista}`);
-                });
+               errorCount++;
+               console.error(`Erro ao salvar presença para corista ID ${presencaData.idCorista}`);
+            } else {
+               successCount++;
             }
-            
-            successCount++;
-            return response.json(); 
         })
         .catch(error => {
-            
             errorCount++;
             console.error(`Erro na chamada fetch para corista ID ${presencaData.idCorista}:`, error);
-            
-            return { error: true, coristaId: presencaData.idCorista, message: error.message };
+        });
+        savePromises.push(savePromise);
+    });
+
+    musicoCheckboxes.forEach(checkbox => {
+        const presencaData = {
+            idMusico: parseInt(checkbox.dataset.musicoId),
+            idAgenda: parseInt(agendaId),
+            presente: checkbox.checked
+        };
+
+        const savePromise = fetch(`${API_BASE_URL}/presencas-musicos`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(presencaData)
+        })
+        .then(response => {
+            if (!response.ok) {
+               errorCount++;
+               console.error(`Erro ao salvar presença para músico ID ${presencaData.idMusico}`);
+            } else {
+               successCount++;
+            }
+        })
+        .catch(error => {
+            errorCount++;
+            console.error(`Erro na chamada fetch para músico ID ${presencaData.idMusico}:`, error);
         });
         savePromises.push(savePromise);
     });
 
     try {
-        
-        const results = await Promise.all(savePromises);
-        console.log("Resultados do salvamento:", results);
+        await Promise.all(savePromises);
 
-        
         let finalMessage = `${successCount} presenças salvas com sucesso.`;
         if (errorCount > 0) {
-            finalMessage += ` ${errorCount} falharam. Verifique a consola para detalhes.`;
-            alert(finalMessage); 
-        } else {
-            alert(finalMessage); 
+            finalMessage += ` ${errorCount} falharam. Verifique a consola.`;
         }
-
-        
-        
+        alert(finalMessage);
 
     } catch (error) {
-        
         console.error("Erro inesperado ao salvar presenças:", error);
         alert("Ocorreu um erro inesperado ao salvar todas as presenças.");
     }
@@ -994,5 +1000,50 @@ async function loadDashboardData() {
         proximaApresentacaoEl.textContent = 'Erro ao carregar';
         totalCoristasEl.textContent = 'Erro';
         totalMusicosEl.textContent = 'Erro';
+    }
+}
+async function loadMusicosForPresenca(agendaId) {
+    const musicosListDiv = document.getElementById('musicos-presenca-list');
+    if (!musicosListDiv) return;
+
+    musicosListDiv.innerHTML = '<p>Carregando músicos...</p>';
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/musicos`);
+        if (!response.ok) throw new Error('Falha ao buscar músicos');
+        const musicos = await response.json();
+
+        if (!musicos || musicos.length === 0) {
+            musicosListDiv.innerHTML = '<p>Nenhum músico encontrado.</p>';
+            return;
+        }
+
+        musicosListDiv.innerHTML = '';
+
+        musicos.forEach(musico => {
+            if (musico.ativo) {
+                const div = document.createElement('div');
+                div.style.marginBottom = '8px';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `musico-${musico.id}`;
+                checkbox.value = musico.id;
+                checkbox.dataset.musicoId = musico.id;
+                checkbox.checked = false;
+
+                const label = document.createElement('label');
+                label.htmlFor = `musico-${musico.id}`;
+                label.textContent = ` ${musico.nome} (${musico.instrumento || 'N/D'})`;
+                label.style.marginLeft = '5px';
+
+                div.appendChild(checkbox);
+                div.appendChild(label);
+                musicosListDiv.appendChild(div);
+            }
+        });
+
+    } catch (error) {
+        console.error("Erro ao carregar lista de músicos para presença:", error);
+        musicosListDiv.innerHTML = '<p>Erro ao carregar músicos.</p>';
     }
 }

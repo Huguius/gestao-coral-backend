@@ -10,7 +10,7 @@
     <header>
         <h1>Plataforma de Gestão</h1>
         <nav>
-            <ul>
+             <ul>
                 <li><a href="dashboard.html">Dashboard</a></li>
                 <li><a href="coristas.html">Coristas</a></li>
                 <li><a href="musicos.html">Músicos</a></li>
@@ -31,14 +31,19 @@
                     <option value="">-- Carregando eventos... --</option>
                 </select>
             </div>
-             <button id="load-coristas-presenca-btn" style="margin-top: 10px;">Carregar Lista de Coristas</button>
+             <button id="load-listas-presenca-btn" style="margin-top: 10px;">Carregar Listas</button>
         </div>
 
         <hr style="margin: 20px 0;">
 
         <h3>Lista de Coristas</h3>
-        <div id="coristas-presenca-list" style="margin-bottom: 20px; max-height: 400px; overflow-y: auto; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-            <p>Selecione um evento e clique em "Carregar Lista de Coristas".</p>
+        <div id="coristas-presenca-list" style="margin-bottom: 20px; max-height: 300px; overflow-y: auto; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <p>Selecione um evento e clique em "Carregar Listas".</p>
+        </div>
+
+        <h3>Lista de Músicos</h3>
+        <div id="musicos-presenca-list" style="margin-bottom: 20px; max-height: 200px; overflow-y: auto; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <p>Selecione um evento e clique em "Carregar Listas".</p>
         </div>
 
         <button id="save-presencas-btn">Salvar Presenças</button>

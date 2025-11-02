@@ -12,6 +12,7 @@
         <class>com.gestao.coral.model.Agenda</class>
         <class>com.gestao.coral.model.Presenca</class>
         <class>com.gestao.coral.model.Usuario</class>
+        <class>com.gestao.coral.model.PresencaMusico</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
